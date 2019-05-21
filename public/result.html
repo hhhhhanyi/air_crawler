@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>SpotFlight</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/result.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script type='text/javascript' src='https://www.gstatic.com/charts/loader.js'></script>
+    <link rel="shortcut icon" href="pic/logo.png" type="image/x-ico" />
+  </head>
+  <body>
+    <header>
+      <a href="https://hhhhhanyi.com"><img src="pic/logo_2.svg" alt="logo" id="logo"></a>
+    </header>
+    <div id="content">
+      <div id="border">
+      <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+          <a class="nav-item nav-link active" id="nav-1-tab" data-toggle="tab" href="#nav-1" role="tab" aria-controls="nav-1" aria-selected="true"> 當日價格 </a>
+          <a class="nav-item nav-link" id="nav-2-tab" data-toggle="tab" href="#nav-2" role="tab" aria-controls="nav-2" aria-selected="false">　推薦其他旅行時間　</a>
+          <a class="nav-item nav-link" id="nav-3-tab" data-toggle="tab" href="#nav-3" role="tab" aria-controls="nav-3" aria-selected="false" onclick='map()'>　推薦其他旅行地　</a>
+        </div>
+      </nav>
+      <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-1" role="tabpanel" aria-labelledby="nav-1-tab" style="margin-top:30px;">
+          <nav>
+            <div class="nav nav-pills" id="nav-pills" role="tablist">
+              <a class="nav-item nav-link disabled" id="nav-price-tab" data-toggle="tab" href="#nav-sort" role="tab" aria-controls="nav-sort" aria-selected="false" style="color:#808080"> 排序方式 </a>
+              <a class="nav-item nav-link active" id="nav-price-tab" data-toggle="tab" href="#nav-price" role="tab" aria-controls="nav-price" aria-selected="true"> 價錢 </a>
+              <a class="nav-item nav-link" id="nav-time-tab" data-toggle="tab" href="#nav-time" role="tab" aria-controls="nav-time" aria-selected="false"> 飛行時間 </a>
+              <a class="nav-item nav-link" id="nav-departure_time-tab" data-toggle="tab" href="#nav-departure_time" role="tab" aria-controls="nav-departure_time" aria-selected="false"> 出發時間 </a>
+              <a class="nav-item nav-link" id="nav-arrival_time-tab" data-toggle="tab" href="#nav-arrival_time" role="tab" aria-controls="nav-arrival_time" aria-selected="false"> 抵達時間 </a>
+            </div>
+          </nav>
+          <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="nav-price" role="tabpanel" aria-labelledby="nav-price-tab"></div>
+            <div class="tab-pane fade" id="nav-time" role="tabpanel" aria-labelledby="nav-time-tab"></div>
+            <div class="tab-pane fade" id="nav-departure_time" role="tabpanel" aria-labelledby="nav-departure_time-tab"></div>
+            <div class="tab-pane fade" id="nav-arrival_time" role="tabpanel" aria-labelledby="nav-arrival_time-tab"></div>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="nav-2" role="tabpanel" aria-labelledby="nav-2-tab" style="margin-top:30px;">
+          <nav>
+            <div class="nav nav-pills" id="nav-pills" role="tablist" style="margin-bottom:20px">
+              <a class="nav-item nav-link active" id="nav-calendar-tab" data-toggle="tab" href="#nav-calendar" role="tab" aria-controls="nav-calendar" aria-selected="true"> 價格月曆 </a>
+              <a class="nav-item nav-link" id="nav-chart-tab" data-toggle="tab" href="#nav-chart" role="tab" aria-controls="nav-chart" aria-selected="false" onclick='chart()'> 價格走勢圖 </a>
+            </div>
+          </nav>
+          <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="nav-calendar" role="tabpanel" aria-labelledby="nav-calendar-tab">
+              <div style="width:100%">
+                <p style="color:#666; font-size:14px">每日航班最低價（僅顯示直飛航班價格）</p>
+                <div id="calendar">
+                  <ul>
+                    <li>
+                      <span style="font-size:30px" id="month"></span><br>
+                      <span style="font-size:18px" id="year"></span>
+                    </li>
+                  </ul>
+                </div>
+                <ul id="weekdays">
+                  <li>Sun</li>
+                  <li>Mon</li>
+                  <li>Tue</li>
+                  <li>Wed</li>
+                  <li>Thu</li>
+                  <li>Fri</li>
+                  <li>Sat</li>
+                </ul>
+                <ul id="days"></ul>
+              </div>
+            </div>
+            <div class="tab-pane fade" id="nav-chart" role="tabpanel" aria-labelledby="nav-chart-tab">
+              <p style="color:#666; font-size:14px">每日航班走勢（僅顯示直飛航班與價格）</p>
+              <div id="price_div" style="width: 100%; height: 500px; margin-top:20px;"></div>
+              <div id="quantity_div" style="width: 100%; height: 300px;  margin-top:30px;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="nav-3" role="tabpanel" aria-labelledby="nav-3-tab" style="margin-top:30px;">
+          <p id="mapTitle">價格地圖</p>
+          <p id="map"></p>
+          <div id="map_div" style="width: 100%; height: 500px;"></div>
+        </div>
+      </div>
+    </div>
+    </div>
+    <script type='text/javascript' src='/search.js'></script>
+    <script type='text/javascript' src='/statistics.js'></script>
+  </body>
+</html>

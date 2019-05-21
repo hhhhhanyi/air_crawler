@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>SpotFlight</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="shortcut icon" href="pic/logo.png" type="image/x-ico" />
+  </head>
+  <body>
+    <header>
+      <a href="https://hhhhhanyi.com"><img src="pic/logo.svg" alt="logo" id="logo"></a>
+    </header>
+    <form class="form-horizontal" method="post" action="/api/search" id="search">
+        <div class="row form-group">
+            <label for="departure" class="col-sm-2 control-label">出發地</label>
+            <div class="col-sm-10">
+                <div class="select">
+                  <select class="form-control input-sm" id="departure" name="departure" onchange="select(this.selectedIndex)">
+                    <option value="TPE_Taipei">台北</option>
+                    <option value="HKG_Hong-Kong">香港</option>
+                    <option value="BJS_Beijing">北京</option>
+                    <option value="TYO_Tokyo">東京</option>
+                    <option value="SEL_Seoul">首爾</option>
+                    <option value="BKK_Bangkok">曼谷</option>
+                    <option value="SIN_Singapore">新加坡</option>
+                    <option value="KUL_Kuala-Lumpur">吉隆坡</option>
+                    <option value="NYC_New-York">紐約</option>
+                    <option value="YVR_Vancouver">溫哥華</option>
+                    <option value="LAX_Los-Angeles">洛杉磯</option>
+                    <option value="YTO_Toronto">多倫多</option>
+                    <option value="SYD_Sydney">雪梨</option>
+                    <option value="LON_London">倫敦</option>
+                    <option value="PAR_Paris">巴黎</option>
+                  </select>
+                </div>
+            </div>
+        </div>
+        <div class="row form-group">
+            <label for="arrival" class="col-sm-2 control-label">目的地</label>
+            <div class="col-sm-10">
+                <div class="select">
+                  <select class="form-control input-sm" id="arrival" name="arrival">
+                  </select>
+                </div>
+            </div>
+        </div>
+        <div class="row form-group">
+            <label for="date" class="col-sm-2 control-label">日期</label>
+            <div class="col-sm-10">
+              <input type="date" class="form-control" name="date" id="date" placeholder="請輸入 5 月至 7 月的任意日期。 ex.2019-05-01" min="2019-05-01" max="2019-07-31">
+            </div>
+        </div>
+        <div class="row form-group">
+            <label for="people" class="col-sm-2 control-label">旅行人數</label>
+            <div class="col-sm-10">
+              <input type="number" class="form-control" name="adult" id="adult" value=1 max=9 min=1 placeholder="請輸入旅行人數">
+            </div>
+        </div>
+        <!-- <div class="row form-group">
+            <label for="cabinClass" class="col-sm-2 control-label">艙等</label>
+            <div class="col-sm-10">
+                <div class="select">
+                  <select class="form-control input-sm" name="cabinClass">
+                    <option value="YS"> 經濟艙 / 豪華經濟艙</option>
+                    <option value="S"> 豪華經濟艙</option>
+                    <option value="CF"> 商務艙 / 頭等艙</option>
+                    <option value="C"> 商務艙</option>
+                    <option value="F"> 頭等艙</option>
+                  </select>
+                </div>
+            </div>
+        </div> -->
+        <div class="row form-group">
+            <label for="flight" class="col-sm-2 control-label">航班</label>
+            <div class="col-sm-10">
+                <div class="select">
+                  <select class="form-control input-sm" name="type">
+                    <option value="direct"> 直飛 </option>
+                    <option value="transfer"> 轉機 </option>
+                  </select>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div align="center" style="padding-left:10%;"><button type="submit" class="btn" id="submit">Submit</button></div>
+      </form>
+  </body>
+  <script>
+    let today = new Date();
+    let year = today.getFullYear();
+    let month = (parseInt(today.getMonth()+1, 10) + 100).toString().substr(1);
+    let date = (parseInt(today.getDate(), 10) + 100).toString().substr(1);
+    document.getElementById('date').value = `${year}-${month}-${date}`;
+
+    function select(index){
+      let arrival = [
+        {value: 'TPE_Taipei', name: '台北'},
+        {value: 'HKG_Hong-Kong', name: '香港'},
+        {value: 'BJS_Beijing', name: '北京'},
+        {value: 'TYO_Tokyo',name: '東京'},
+        {value: 'SEL_Seoul',name: '首爾'},
+        {value: 'BKK_Bangkok', name: '曼谷'},
+        {value: 'SIN_Singapore', name: '新加坡'},
+        {value: 'KUL_Kuala-Lumpur', name: '吉隆坡'},
+        {value: 'NYC_New-York', name: '紐約'},
+        {value: 'YVR_Vancouver', name: '溫哥華'},
+        {value: 'LAX_Los-Angeles', name: '洛杉磯'},
+        {value: 'YTO_Toronto', name: '多倫多'},
+        {value: 'SYD_Sydney', name: '雪梨'},
+        {value: 'LON_London', name: '倫敦'},
+        {value: 'PAR_Paris',name: '巴黎'}
+      ];
+      document.getElementById('arrival').innerHTML = '';
+      arrival.splice(index, 1);
+      let selectOption = '';
+      for(let i=0; i<arrival.length; i++){
+        selectOption += `<option value='${arrival[i].value}'>${arrival[i].name}</option>`
+      }
+      document.getElementById('arrival').innerHTML = selectOption;
+    }
+    select(document.getElementById("departure").selectedIndex);
+  </script>
+</html>

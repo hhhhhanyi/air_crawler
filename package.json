@@ -1,0 +1,37 @@
+{
+  "name": "index",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "serve": "nodemon index.js",
+    "test": "mocha --timeout 10000",
+    "phantomjs": "node_modules/.bin/phantomjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "delayed-request": "^1.0.0",
+    "express": "^4.16.4",
+    "fs": "0.0.1-security",
+    "https": "^1.0.0",
+    "ipware": "^2.0.0",
+    "mysql": "^2.16.0",
+    "nodemailer": "^6.1.1",
+    "supertest": "^4.0.2",
+    "util": "^0.11.1"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.17.2",
+    "eslint-plugin-node": "^9.0.1",
+    "eslint-plugin-promise": "^4.1.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "mocha": "^6.1.4",
+    "chai": "^4.2.0",
+    "phantomjs": "^2.1.7"
+  }
+}

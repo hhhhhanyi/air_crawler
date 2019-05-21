@@ -1,0 +1,306 @@
+#calendar_title{
+  font-size: 30px;
+}
+
+.nav.nav-tabs a{
+  color: #808080;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+ul {
+  list-style-type: none;
+}
+
+body {
+  font-family: Verdana, sans-serif;
+}
+
+header{
+  width: 100%;
+  text-align: center;
+}
+
+body{
+  background-image: url(../pic/airplane-1670266_1920.jpg);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  margin: 40px;
+}
+
+#content{
+  margin: 30px 100px 100px 100px;
+  padding: 5%;
+  background-color: rgba(255,255,255,0.9);
+  border-radius: 10px;
+  min-height:calc(100vh - 200px);
+}
+
+#logo{
+  width: 300px;
+}
+
+.nav-pills .nav-link.active{
+  background-color: #2970d6;
+}
+
+.nav.nav-pills a{
+  color: #2970d6;
+}
+
+#calendar {
+  padding: 30px 25px;
+  /* font-family: Courier, Arial; */
+  width: 100%;
+  background: #2970d6;
+  text-align: center;
+  border-radius: 8px 8px 0 0;
+}
+
+#calendar ul {
+  margin: 0;
+  padding: 0;
+}
+
+#calendar ul li {
+  color: white;
+  font-size: 20px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+#weekdays {
+  margin: 0;
+  padding: 10px 0;
+  background-color: #ddd;
+  font-size: 10px;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+}
+
+#weekdays li {
+  display: inline-block;
+  width: 13.6%;
+  color: #666;
+  text-align: center;
+}
+
+#days li:hover{
+  background-color: #ddd;
+}
+
+#days {
+  border-radius:0 0 8px 8px;
+  padding: 0;
+  background: #F3F3F4;
+  margin: 0;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+}
+
+#days li {
+  padding: 10px;
+  list-style-type: none;
+  display: inline-block;
+  width: 13.6%;
+  text-align: center;
+  font-size: 12px;
+  color: #777;
+}
+
+a{
+  color: silver;
+}
+
+a:hover{
+  text-decoration:none;
+}
+
+.calendar_date{
+  font-size:15px;
+  color: #000;
+  font-weight: 600;
+  margin: 0;
+}
+
+.calendar_dollar{
+  margin: 2px 0 0 0;
+  font-family: Courier, Arial;
+  font-size: 15px;
+}
+
+.calendar_price{
+  color: green;
+  /* font-family: Courier, Arial; */
+  font-size: 15px;
+  margin: 0;
+}
+
+.high{
+  color: red;
+}
+
+#mapTitle{
+  margin: 0;
+  cursor: default;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+  font-family: Roboto;
+  font-size: 16px;
+  color: rgb(117, 117, 117);
+}
+
+#map{
+  margin: 0 0 20px 0;
+  cursor: default;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+  font-family: Roboto;
+  font-size: 14px;
+  color: rgb(189, 189, 189);
+}
+
+#quantity_div, #price_div{
+  border: 1px solid #E2E2E2;
+  padding: 30px;
+  background-color: #FFF;
+}
+
+#chart_div{
+  border: 1px solid #E2E2E2;
+  /* padding: 30px; */
+  background-color: #FFF;
+}
+
+
+.flightData{
+  background-color: #FFF;
+  border: 0.5px solid #E2E2E2;
+  border-radius: 8px;
+  padding: 13px 0 0 40px;
+  margin: 20px 0;
+  box-shadow: 5px 5px 5px #DDD;
+  display: flex;
+  align-items: center;
+}
+
+.airline_name{
+  color: #AAA;
+  font-size: 12px;
+  margin-top: -15px;
+}
+
+.airline_img{
+  width: 30%;
+  display: inline-block;
+  padding-top: 2px;
+}
+
+.airline_datail{
+  width: 70%;
+  display: inline-block;
+  padding-left:10px;
+}
+
+.departure{
+  width: 25%;
+  display: inline-block;
+  text-align: center;
+}
+
+.duration{
+  width: 50%;
+  display: inline-block;
+  margin: 0 -10px;
+  text-align: center;
+}
+
+.duration_time{
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.duration_line{
+  width: 100%;
+  height: 2px;
+  background-color: #000;
+  margin-top: -5px;
+}
+
+.arrival{
+  width: 25%;
+  display: inline-block;
+  text-align: center;
+}
+
+.flightPrice{
+  float:right;
+  margin-right:15px;
+}
+
+.flightPrice_dollar{
+  color: #008b57;
+  display: inline;
+}
+
+.flightPrice_price{
+  font-size: 24px;color:#008b57
+}
+
+.transfer_detail{
+  float: right;
+  margin-right: -2px;
+  background-color: #008b57;
+  float: right;
+  margin-right: -18px;
+  border-radius: 3px;
+  padding: 10px;
+  text-align: right;
+}
+
+.transfer_duration{
+  color: #FFF;
+  font-size: 10px;
+  margin:0;
+  display:inline;
+}
+
+.transfer_time{
+  color: #FFF;
+  font-size: 12px;
+  margin:0;
+}
+
+#error{
+  padding: 5% 10% 0 10%;
+}
+
+#errorImg{
+  width: 70%;
+  margin: 0 auto;
+  padding: 10%;
+}
+
+#errorMsg{
+  font-size: 18px;
+  width: 100%;
+  margin: 0;
+  display: inline-block;
+  justify-content: center;
+  color: #495057;
+}
+
+#sorry{
+  font-size: 30px;
+  color: #AD292C;
+  justify-content: center;
+}
+
+#errorMessage{
+  padding: 5%;
+  margin: auto;
+}

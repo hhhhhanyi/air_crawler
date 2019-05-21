@@ -1,0 +1,32 @@
+body {
+ background-image: url(../pic/airplane-1670266_1920.jpg);
+ height: 100vh;
+ display: flex;
+ flex-flow: column;
+ justify-content: center;
+}
+
+header{
+  width: 100%;
+  text-align: center;
+}
+
+#logo{
+  width: 350px;
+  margin-bottom: 20px;
+}
+
+#search{
+  width: 700px;
+  margin: 0 auto;
+  padding-right: 50px;
+}
+
+#submit{
+  width: 30%;
+  margin-top: -10px;
+  background-color: #FFCC33;
+  color: #FFF;
+  font-weight: 700;
+  font-size: 14px;
+}
