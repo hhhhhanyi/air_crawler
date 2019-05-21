@@ -55,20 +55,25 @@ router.post('/search', (req, res) => {
       };
       resolve(crawlerConfig);
     });
-    crawler.then((crawlerConfig) => {
-      /* Request API */
-      return lib.requestAPI(crawlerConfig);
-    }).then((flightData) => {
-      /* 整理當日航班資訊、統計每日航班價格 */
-      return lib.createFlightData(crawlerConfig, flightData);
-    }).then((data) => {
-      /* 輸入 Database */
-      return insertFlightData.crawler(crawlerConfig, data[0], data[1]);
-    }).catch((error) => {
-      errorHandling(error);
-    }).then(() => {
+    /* 排除過去資料 */
+    if (+new Date(date) > +new Date()) {
+      crawler.then((crawlerConfig) => {
+        /* Request API */
+        return lib.requestAPI(crawlerConfig);
+      }).then((flightData) => {
+        /* 整理當日航班資訊、統計每日航班價格 */
+        return lib.createFlightData(crawlerConfig, flightData);
+      }).then((data) => {
+        /* 輸入 Database */
+        return insertFlightData.crawler(crawlerConfig, data[0], data[1]);
+      }).catch((error) => {
+        errorHandling(error);
+      }).then(() => {
+        res.redirect(`../result.html?departure=${departureCode}&arrival=${arrivalCode}&date=${date}&p=${adult}&t=${type}`);
+      });
+    } else {
       res.redirect(`../result.html?departure=${departureCode}&arrival=${arrivalCode}&date=${date}&p=${adult}&t=${type}`);
-    });
+    }
   } else {
     res.send(errorHandling({
       api: 'SEARCH POST API ERROR',
@@ -85,7 +90,7 @@ router.get('/search', (req, res) => {
   let type = req.query.t;
   let locationData = [];
   let flightData = [];
-  let maxPrice, time_1, time_2;
+  let maxPrice, arrivalTime, departureTime;
   if (adult <= 0) {
     adult = 1;
   }
@@ -148,12 +153,12 @@ router.get('/search', (req, res) => {
             reject(error);
           } else {
             if (result.length !== 0) {
-              let a_timezone_index, b_timezone_index;
+              let arrivalTimezone, departureTimezone;
               let today = +new Date(`${date} 23:59`);
-              a_timezone_index = timezones.findIndex(x => x.lacation === departureCode);
+              arrivalTimezone = timezones.findIndex(x => x.lacation === departureCode);
               for (let i = 0; i < result.length; i++) {
-                b_timezone_index = timezones.findIndex(x => x.lacation === result[i].arrival_code);
-                if (+new Date(`${date} ${result[i].departure_time}`) + result[i].duration + (timezones[b_timezone_index].time - timezones[a_timezone_index].time) * 3600000 < today) {
+                departureTimezone = timezones.findIndex(x => x.lacation === result[i].arrival_code);
+                if (+new Date(`${date} ${result[i].departure_time}`) + result[i].duration + (timezones[departureTimezone].time - timezones[arrivalTimezone].time) * 3600000 < today) {
                   flightData.push({
                     type: 'direct',
                     total_duration: result[i].duration,
@@ -166,7 +171,7 @@ router.get('/search', (req, res) => {
               }
               maxPrice = result[result.length - 1].totalPrice;
             } else {
-                maxPrice = 9999999999;
+              maxPrice = 9999999999;
             }
             sql = `SELECT arrival_code,GROUP_CONCAT(json_object('flightNo',flightNo,'departure_code',departure_code,'arrival_code',arrival_code,'date',date,'cabinClass',cabinClass,'duration_hour',duration_hour,'duration_min',duration_min,'duration',duration,'departure_time',departure_time,'arrival_time',arrival_time,'airline_code',airline_code,'airline_name',airline_name,'departure_portCode',departure_portCode,'departure_portName',departure_portName,'arrival_portCode',arrival_portCode,'arrival_portName',arrival_portName,'tax',tax,'fare',fare,'totalPrice',totalPrice)) as flight FROM flight WHERE departure_code='${departureCode}' && arrival_code!='${arrivalCode}' && date='${date}' && totalPrice<${maxPrice} GROUP BY arrival_code`;
             mysql.con.query(sql, (error, result) => {
@@ -216,16 +221,16 @@ router.get('/search', (req, res) => {
           for (let m = 0; m < locationData[i].flight[0].length; m++) {
             // 依目的地
             for (let n = 0; n < locationData[i].flight[1].length; n++) {
-              time_1 = +new Date(`${date} ${locationData[i].flight[0][m].arrival_time}`);
-              time_2 = +new Date(`${date} ${locationData[i].flight[1][n].departure_time}`);
-              if (locationData[i].flight[0][m].totalPrice + locationData[i].flight[1][n].totalPrice < maxPrice && time_2 - time_1 > 3600000) {
+              arrivalTime = +new Date(`${date} ${locationData[i].flight[0][m].arrival_time}`);
+              departureTime = +new Date(`${date} ${locationData[i].flight[1][n].departure_time}`);
+              if (locationData[i].flight[0][m].totalPrice + locationData[i].flight[1][n].totalPrice < maxPrice && departureTime - arrivalTime > 3600000) {
                 flightData.push({
                   type: 'transfer',
-                  transfer_duration: (time_2 - time_1) / 60000,
-                  total_duration: (time_2 - time_1) / 60000 + locationData[i].flight[0][m].duration + locationData[i].flight[1][n].duration,
+                  transfer_duration: (departureTime - arrivalTime) / 60000,
+                  total_duration: (departureTime - arrivalTime) / 60000 + locationData[i].flight[0][m].duration + locationData[i].flight[1][n].duration,
                   totalPrice: (locationData[i].flight[0][m].totalPrice + locationData[i].flight[1][n].totalPrice) * adult,
                   departure_time: +new Date(`${date} ${locationData[i].flight[0][m].departure_time}`),
-                  arrival_time: +new Date(`${date} ${locationData[i].flight[0][m].departure_time}`) + (time_2 - time_1) + (locationData[i].flight[0][m].duration + locationData[i].flight[1][n].duration) * 60000,
+                  arrival_time: +new Date(`${date} ${locationData[i].flight[0][m].departure_time}`) + (departureTime - arrivalTime) + (locationData[i].flight[0][m].duration + locationData[i].flight[1][n].duration) * 60000,
                   flight: [
                     locationData[i].flight[0][m],
                     locationData[i].flight[1][n]

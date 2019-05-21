@@ -81,13 +81,13 @@ function map(){
         </div>
       </div>`;
       return 'error';
-    }else{
+    } else {
       let mapData = [];
       let map = new Promise((resolve,reject)=>{
         for(let i=0; i<mapAPI.map.length; i++){
           if(mapAPI.map[i].min!==0){
             mapData.push([
-              mapAPI.map[i].arrival.name,
+              mapAPI.map[i].airportName,
               mapAPI.map[i].min
             ]);
           }
