@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const router = express.Router();
 const bodyParser = require('body-parser');
-const mysql = require('.././util/mysql.js');
+const apiDAO = require('.././dao/api.js');
 const lib = require('.././util/lib.js');
 const insertFlightData = require('.././dao/crawler.js');
 const errorHandling = require('.././util/errorhandling.js').error;
@@ -96,112 +96,76 @@ router.get('/search', (req, res) => {
   }
   if (location.indexOf(departureCode) >= 0 && location.indexOf(arrivalCode) >= 0 && +new Date(date) >= 1556668800000 && +new Date(date) <= 1564531200000 && adult < 10 && flighttype.indexOf(type) >= 0) {
     if (type === 'direct') {
-      let sql = `SELECT * from flight WHERE departure_code='${departureCode}' AND arrival_code='${arrivalCode}' AND date='${date}' ORDER BY totalPrice`;
-      mysql.con.query(sql, (error, result) => {
-        if (error) {
-          res.send(errorHandling({
-            api: 'DIRECT FLIGHT API ERROR',
-            error: error
-          }));
-        } else {
-          if (result.length !== 0) {
-            for (let i = 0; i < result.length; i++) {
-              flightData.push({
-                type: 'direct',
-                total_duration: result[i].duration,
-                totalPrice: result[i].totalPrice * adult,
-                departure_time: +new Date(`${date} ${result[i].departure_time}`),
-                arrival_time: +new Date(`${date} ${result[i].departure_time}`) + (result[i].duration * 60000),
-                flight: [result[i]]
-              });
-            }
-            let price = flightData.slice(0, flightData.length);
-            price.sort(function (a, b) {
-              return a.totalPrice - b.totalPrice;
+      apiDAO.directFlight(departureCode, arrivalCode, date).then((data) => {
+        if (data.length !== 0) {
+          for (let i = 0; i < data.length; i++) {
+            flightData.push({
+              type: 'direct',
+              total_duration: data[i].duration,
+              totalPrice: data[i].totalPrice * adult,
+              departure_time: +new Date(`${date} ${data[i].departure_time}`),
+              arrival_time: +new Date(`${date} ${data[i].departure_time}`) + (data[i].duration * 60000),
+              flight: [data[i]]
             });
-            let time = flightData.slice(0, flightData.length);
-            time.sort(function (a, b) {
-              return a.total_duration - b.total_duration;
-            });
-            let departure = flightData.slice(0, flightData.length);
-            departure.sort(function (a, b) {
-              return a.departure_time - b.departure_time;
-            });
-            let arrival = flightData.slice(0, flightData.length);
-            arrival.sort(function (a, b) {
-              return a.arrival_time - b.arrival_time;
-            });
-            res.send({
-              status: 'success',
-              flight:
-              [price, time, departure, arrival]
-            });
-          } else {
-            res.send(errorHandling({
-              api: 'DIRECT FLIGHT API ERROR',
-              error: req.headers
-            }));
           }
+          let price = flightData.slice(0, flightData.length);
+          price.sort(function (a, b) {
+            return a.totalPrice - b.totalPrice;
+          });
+          let time = flightData.slice(0, flightData.length);
+          time.sort(function (a, b) {
+            return a.total_duration - b.total_duration;
+          });
+          let departure = flightData.slice(0, flightData.length);
+          departure.sort(function (a, b) {
+            return a.departure_time - b.departure_time;
+          });
+          let arrival = flightData.slice(0, flightData.length);
+          arrival.sort(function (a, b) {
+            return a.arrival_time - b.arrival_time;
+          });
+          res.send({
+            status: 'success',
+            flight:
+            [price, time, departure, arrival]
+          });
         }
       });
     } else {
-      let departure, arrival;
       let transfer = new Promise((resolve, reject) => {
-        let sql = `SELECT * from flight WHERE departure_code='${departureCode}' AND arrival_code='${arrivalCode}' AND date='${date}' ORDER BY totalPrice`;
-        mysql.con.query(sql, (error, result) => {
-          if (error) {
-            reject(error);
-          } else {
-            if (result.length !== 0) {
-              let arrivalTimezone, departureTimezone;
-              let today = +new Date(`${date} 23:59`);
-              arrivalTimezone = timezones.findIndex(x => x.lacation === departureCode);
-              for (let i = 0; i < result.length; i++) {
-                departureTimezone = timezones.findIndex(x => x.lacation === result[i].arrival_code);
-                if (+new Date(`${date} ${result[i].departure_time}`) + result[i].duration + (timezones[departureTimezone].time - timezones[arrivalTimezone].time) * 3600000 < today) {
-                  flightData.push({
-                    type: 'direct',
-                    total_duration: result[i].duration,
-                    totalPrice: result[i].totalPrice * adult,
-                    departure_time: +new Date(`${date} ${result[i].departure_time}`),
-                    arrival_time: +new Date(`${date} ${result[i].departure_time}`) + (result[i].duration * 60000),
-                    flight: [result[i]]
-                  });
-                }
+        apiDAO.directFlight(departureCode, arrivalCode, date).then((data) => {
+          if (data.length !== 0) {
+            let arrivalTimezone, departureTimezone;
+            let today = +new Date(`${date} 23:59`);
+            arrivalTimezone = timezones.findIndex(x => x.lacation === departureCode);
+            for (let i = 0; i < data.length; i++) {
+              departureTimezone = timezones.findIndex(x => x.lacation === data[i].arrival_code);
+              if (+new Date(`${date} ${data[i].departure_time}`) + data[i].duration + (timezones[departureTimezone].time - timezones[arrivalTimezone].time) * 3600000 < today) {
+                flightData.push({
+                  type: 'direct',
+                  total_duration: data[i].duration,
+                  totalPrice: data[i].totalPrice * adult,
+                  departure_time: +new Date(`${date} ${data[i].departure_time}`),
+                  arrival_time: +new Date(`${date} ${data[i].departure_time}`) + (data[i].duration * 60000),
+                  flight: [data[i]]
+                });
               }
-              maxPrice = result[result.length - 1].totalPrice;
-            } else {
-              maxPrice = 9999999999;
             }
-            sql = `SELECT arrival_code,GROUP_CONCAT(json_object('flightNo',flightNo,'departure_code',departure_code,'arrival_code',arrival_code,'date',date,'cabinClass',cabinClass,'duration_hour',duration_hour,'duration_min',duration_min,'duration',duration,'departure_time',departure_time,'arrival_time',arrival_time,'airline_code',airline_code,'airline_name',airline_name,'departure_portCode',departure_portCode,'departure_portName',departure_portName,'arrival_portCode',arrival_portCode,'arrival_portName',arrival_portName,'tax',tax,'fare',fare,'totalPrice',totalPrice)) as flight FROM flight WHERE departure_code='${departureCode}' && arrival_code!='${arrivalCode}' && date='${date}' && totalPrice<${maxPrice} GROUP BY arrival_code`;
-            mysql.con.query(sql, (error, result) => {
-              if (error) {
-                reject(error);
-              } else {
-                for (let i = 0; i < result.length; i++) {
-                  result[i].flight = `[${result[i].flight}]`;
-                  result[i].flight = JSON.parse(result[i].flight);
-                }
-                departure = result;
-              }
-            });
-            sql = `SELECT departure_code,GROUP_CONCAT(json_object('flightNo',flightNo,'departure_code',departure_code,'arrival_code',arrival_code,'date',date,'cabinClass',cabinClass,'duration_hour',duration_hour,'duration_min',duration_min,'duration',duration,'departure_time',departure_time,'arrival_time',arrival_time,'airline_code',airline_code,'airline_name',airline_name,'departure_portCode',departure_portCode,'departure_portName',departure_portName,'arrival_portCode',arrival_portCode,'arrival_portName',arrival_portName,'tax',tax,'fare',fare,'totalPrice',totalPrice)) as flight FROM flight WHERE arrival_code='${arrivalCode}' && departure_code!='${departureCode}' && date='${date}' && totalPrice<${maxPrice} GROUP BY departure_code`;
-            mysql.con.query(sql, (error, result) => {
-              if (error) {
-                reject(error);
-              } else {
-                for (let i = 0; i < result.length; i++) {
-                  result[i].flight = `[${result[i].flight}]`;
-                  result[i].flight = JSON.parse(result[i].flight);
-                }
-                arrival = result;
-                resolve();
-              }
-            });
+            maxPrice = data[data.length - 1].totalPrice;
+          } else {
+            maxPrice = 9999999999;
           }
+          return maxPrice;
+        }).then((maxPrice) => {
+          console.log(maxPrice);
+          apiDAO.transferFlight(departureCode, arrivalCode, date, maxPrice).then((data) => {
+            resolve(data);
+          });
         });
       });
-      transfer.then(() => {
+      transfer.then((data) => {
+        let departure = data[0];
+        let arrival = data[1];
         // 配對相同地點
         for (let i = 0; i < departure.length; i++) {
           for (let k = 0; k < arrival.length; k++) {

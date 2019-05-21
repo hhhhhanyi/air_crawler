@@ -62,7 +62,7 @@ fetch(`/api/search?departure=${departureCode}&arrival=${arrivalCode}&date=${date
             createElement('div', {atr: [['class', 'col-sm-3'],['style', 'padding:15px;'],['id', `col1_${counter}_${i}`]]}, `flightData_${counter}_${i}`);
             createElement('div', {atr: [['class', 'row'],['id', `row1_${counter}_${i}`]]}, `col1_${counter}_${i}`);
             createElement('div', {atr: [['class', 'airline_img'],['id', `airline_img_${counter}_${i}`]]}, `row1_${counter}_${i}`);
-            createElement('img', {atr: [['src', `http  ://www.gstatic.com/flights/airline_logos/70px/${data.flight[counter][i].flight[0].airline_code}.png`],['style', `width:40px;`]]}, `airline_img_${counter}_${i}`);
+            createElement('img', {atr: [['src', `http://www.gstatic.com/flights/airline_logos/70px/${data.flight[counter][i].flight[0].airline_code}.png`],['style', `width:40px;`]]}, `airline_img_${counter}_${i}`);
             createElement('div', {atr: [['class', 'airline_datail'],['id', `airline_datail_${counter}_${i}`]]}, `row1_${counter}_${i}`);
             createElement('p', {text:`${data.flight[counter][i].flight[0].flightNo}`},  `airline_datail_${counter}_${i}`);
             createElement('p', {text:`${data.flight[counter][i].flight[0].airline_name}`,atr: [['class', 'airline_name']]},  `airline_datail_${counter}_${i}`);

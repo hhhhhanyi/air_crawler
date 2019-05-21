@@ -116,7 +116,6 @@ function requestAPI (crawlerConfig) {
       }
     };
     console.log(options.headers);
-
     request(options, (error, res, body) => {
       if (error) {
         reject({

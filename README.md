@@ -53,5 +53,5 @@ Website: [https://hhhhhanyi.com](https://hhhhhanyi.com)
 - Bootstrap
 
 ## Contact
-Han-Yi Lin<br>
+**Han-Yi Lin**<br>
 E-mail: hhhhhanyi@gmail.com
