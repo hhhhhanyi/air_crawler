@@ -130,6 +130,11 @@ router.get('/search', (req, res) => {
             [price, time, departure, arrival]
           });
         }
+      }).catch((error) => {
+        res.send(errorHandling({
+          api: 'SEARCH GET API ERROR',
+          error: req.headers
+        }));
       });
     } else {
       let transfer = new Promise((resolve, reject) => {
@@ -160,7 +165,17 @@ router.get('/search', (req, res) => {
           console.log(maxPrice);
           apiDAO.transferFlight(departureCode, arrivalCode, date, maxPrice).then((data) => {
             resolve(data);
+          }).catch((error) => {
+            res.send(errorHandling({
+              api: 'SEARCH GET API ERROR',
+              error: req.headers
+            }));
           });
+        }).catch((error) => {
+          res.send(errorHandling({
+            api: 'SEARCH GET API ERROR',
+            error: req.headers
+          }));
         });
       });
       transfer.then((data) => {

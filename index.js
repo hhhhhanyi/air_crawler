@@ -70,7 +70,7 @@ function airCrawler (resolve, reject) {
     }, 3600000);
   });
 };
-//airCrawler();
+airCrawler();
 
 app.use('/', express.static('public'));
 app.listen(3000, () => {
