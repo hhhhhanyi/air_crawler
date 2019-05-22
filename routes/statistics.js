@@ -5,8 +5,8 @@ const apiDAO = require('.././dao/api.js');
 
 const location = ['TPE', 'HKG', 'BJS', 'TYO', 'SEL', 'BKK', 'SIN', 'KUL', 'NYC', 'YVR', 'LAX', 'YTO', 'SYD', 'LON', 'PAR'];
 router.get('/calendar', (req, res) => {
-  let departureCode = req.query.departure_code;
-  let arrivalCode = req.query.arrival_code;
+  let departureCode = req.query.departure;
+  let arrivalCode = req.query.arrival;
   let year = req.query.year;
   let month = req.query.month;
   if (location.indexOf(departureCode) >= 0 && location.indexOf(arrivalCode) >= 0 && parseInt(year) === 2019 && parseInt(month) >= 5 && parseInt(month) <= 7) {
@@ -25,6 +25,7 @@ router.get('/calendar', (req, res) => {
       }
       average /= amount;
       res.send({
+        statusCode: 200,
         status: 'success',
         year: year,
         month: month,
@@ -53,6 +54,7 @@ router.get('/map', (req, res) => {
   if (location.indexOf(departureCode) >= 0 && location.indexOf(arrivalCode) >= 0 && +new Date(date) >= 1556668800000 && +new Date(date) <= 1564531200000) {
     apiDAO.map(departureCode, arrivalCode, date).then((data) => {
       res.send({
+        statusCode: 200,
         status: 'success',
         departure_code: departureCode,
         date: date,

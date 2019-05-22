@@ -1,6 +1,6 @@
 let lib = require('../util/lib.js');
 const supertest = require('supertest');
-const api = supertest('https://hhhhhanyi.com/api');
+const api = supertest('http://localhost:3000/api');
 const { expect } = require('chai');
 let assert = require('assert');
 

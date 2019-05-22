@@ -1,8 +1,11 @@
-fetch(`/api/calendar?departure_code=${departureCode}&arrival_code=${arrivalCode}&year=${year}&month=${month}`)
+let calendarGlobal;
+
+fetch(`/api/calendar?departure=${departureCode}&arrival=${arrivalCode}&year=${year}&month=${month}`)
 .then((response)=>{
   return response.json();
 })
 .then((calendarAPI)=>{
+  calendarGlobal = calendarAPI;
   if(calendarAPI.status === "error"){
     calendar = `
     <div class="row" id="error">
@@ -149,12 +152,8 @@ function map(){
 }
 
 function chart(){
-  fetch(`/api/calendar?departure_code=${departureCode}&arrival_code=${arrivalCode}&year=${year}&month=${month}`)
-  .then((response)=>{
-    return response.json();
-  })
-  .then((chartAPI)=>{
-    if(chartAPI.status === "error"){
+  let chartPromise = new Promise((resolve, reject)=>{
+    if(calendarGlobal.status === "error"){
       document.getElementById('nav-chart').innerHTML = `
       <div class="row" id="error">
         <div class="col-sm-4">
@@ -162,37 +161,37 @@ function chart(){
         </div>
         <div class="col-sm-8" id="errorMessage">
           <b id="sorry">Sorry!</b>
-          <p id="errorMsg">${chartAPI.calendar}</p>
+          <p id="errorMsg">${calendarGlobal.calendar}</p>
         </div>
       </div>`;
-      return [ 'error' ];
+      resolve([ 'error' ]);
     }else{
       let priceArray =[
         ['日期', '最低價', '最高價', '中位數', '平均價']
       ]
-      for(let i=0;i<chartAPI.calendar.length;i++){
+      for(let i=0;i<calendarGlobal.calendar.length;i++){
         priceArray.push([
-          chartAPI.calendar[i].day,
-          chartAPI.calendar[i].min,
-          chartAPI.calendar[i].max,
-          chartAPI.calendar[i].med,
-          chartAPI.calendar[i].avg
+          calendarGlobal.calendar[i].day,
+          calendarGlobal.calendar[i].min,
+          calendarGlobal.calendar[i].max,
+          calendarGlobal.calendar[i].med,
+          calendarGlobal.calendar[i].avg
         ]);
       }
 
       let flightArray =[
         ['日期', '航班數量']
       ]
-      for(let i=0;i<chartAPI.calendar.length;i++){
+      for(let i=0;i<calendarGlobal.calendar.length;i++){
         flightArray.push([
-          chartAPI.calendar[i].day,
-          chartAPI.calendar[i].quantity
+          calendarGlobal.calendar[i].day,
+          calendarGlobal.calendar[i].quantity
         ]);
       }
-      return [ 'success',priceArray,flightArray ];
+      resolve([ 'success',priceArray,flightArray ]);
     }
-  })
-  .then((chartData)=>{
+  });
+  chartPromise.then((chartData)=>{
     if(chartData[0] !== "error"){
       google.charts.load("current", {packages:["line"]});
       google.charts.setOnLoadCallback(drawChart);

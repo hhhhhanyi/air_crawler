@@ -58,20 +58,6 @@
               <input type="number" class="form-control" name="adult" id="adult" value=1 max=9 min=1 placeholder="請輸入旅行人數">
             </div>
         </div>
-        <!-- <div class="row form-group">
-            <label for="cabinClass" class="col-sm-2 control-label">艙等</label>
-            <div class="col-sm-10">
-                <div class="select">
-                  <select class="form-control input-sm" name="cabinClass">
-                    <option value="YS"> 經濟艙 / 豪華經濟艙</option>
-                    <option value="S"> 豪華經濟艙</option>
-                    <option value="CF"> 商務艙 / 頭等艙</option>
-                    <option value="C"> 商務艙</option>
-                    <option value="F"> 頭等艙</option>
-                  </select>
-                </div>
-            </div>
-        </div> -->
         <div class="row form-group">
             <label for="flight" class="col-sm-2 control-label">航班</label>
             <div class="col-sm-10">
@@ -91,7 +77,7 @@
     let today = new Date();
     let year = today.getFullYear();
     let month = (parseInt(today.getMonth()+1, 10) + 100).toString().substr(1);
-    let date = (parseInt(today.getDate(), 10) + 100).toString().substr(1);
+    let date = (parseInt(today.getDate()+1, 10) + 100).toString().substr(1);
     document.getElementById('date').value = `${year}-${month}-${date}`;
 
     function select(index){

@@ -75,10 +75,11 @@ router.post('/search', (req, res) => {
       res.redirect(`../result.html?departure=${departureCode}&arrival=${arrivalCode}&date=${date}&p=${adult}&t=${type}`);
     }
   } else {
-    res.send(errorHandling({
+    errorHandling({
       api: 'SEARCH POST API ERROR',
       error: req.headers
-    }));
+    });
+    res.redirect(`../result.html?departure=${departureCode}&arrival=${arrivalCode}&date=${date}&p=${adult}&t=${type}`);
   }
 });
 
@@ -125,9 +126,11 @@ router.get('/search', (req, res) => {
             return a.arrival_time - b.arrival_time;
           });
           res.send({
+            statusCode: 200,
             status: 'success',
-            flight:
-            [price, time, departure, arrival]
+            flight: [
+              price, time, departure, arrival
+            ]
           });
         }
       }).catch((error) => {
@@ -240,9 +243,11 @@ router.get('/search', (req, res) => {
           return a.arrival_time - b.arrival_time;
         });
         res.send({
+          statusCode: 200,
           status: 'success',
-          flight:
-          [price, time, departure, arrival]
+          flight: [
+            price, time, departure, arrival
+          ]
         });
       }).catch((error) => {
         res.send(errorHandling({
