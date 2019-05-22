@@ -15,7 +15,7 @@ Website: [https://hhhhhanyi.com](https://hhhhhanyi.com)
 	-  利用多組 User-Agent、Cookie (UserId) 爬取資料
 	-  Error 處理：error.log、E-mail 提醒、1 小時後重啟
 
--  **AWS EC2**：使用 EC2 架設 HTTPs、MySQL、Redis 伺服器。
+-  **AWS EC2**：使用 EC2 架設 HTTPs、MySQL 伺服器。
 -  **Data Access Object**: 使用 DAO 設計模式。
 -  **MySQL Transaction**: 使用 Transaction 達成資料的一致性。
 -  **SSL Certificate**: Let's Encrypt SLL 憑證申請與安裝。
@@ -24,11 +24,12 @@ Website: [https://hhhhhanyi.com](https://hhhhhanyi.com)
 	SEARCH (GET)：從資料庫讀取當日機票價格。<br/>
 	CALENDAR (GET)：從資料庫讀取當月機票價格。<br/>
 	MAP (GET)：從資料庫讀取使用者選擇出發地到其他地的機票價格。<br/>
+	[API documnet](https://github.com/hhhhhanyi/air_crawler/blob/master/routes/API.md)
 
 -  **Error Handling**:
 	> ERROR Log：API.log、SQL.log、REQUEST.log、ERROR.log<br/>
 	E-mail 提醒：爬蟲 Request 目標網站 API 出錯時 Email 提醒。
-	
+
 -  **Unit Test**: 使用 Mocha 進行兩項單元測試。
 	> API：使用 Chai Assert Library 驗證 API 執行結果是否符合預期。<br/>
 	Function：驗證 Function 是否可接受不同格式資料輸入。<br/>
@@ -38,9 +39,12 @@ Website: [https://hhhhhanyi.com](https://hhhhhanyi.com)
 - **Fetch**: 使用 Fetch 發送 Request。
 - **Google Chart API**: 使用 Google Chart API 繪製圖表。
 
-	
+
 ## Backend Architecture
 ![img](https://i.imgur.com/QtmOnho.png)
+
+## Database Schema
+![img](https://i.imgur.com/rq0Jono.png)
 
 ## Tech Stack
 - AWS EC2

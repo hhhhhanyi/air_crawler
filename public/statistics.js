@@ -151,9 +151,9 @@ function map(){
   });
 }
 
-function chart(){
+function chart () {
   let chartPromise = new Promise((resolve, reject)=>{
-    if(calendarGlobal.status === "error"){
+    if (calendarGlobal.status === 'error') {
       document.getElementById('nav-chart').innerHTML = `
       <div class="row" id="error">
         <div class="col-sm-4">
@@ -164,12 +164,12 @@ function chart(){
           <p id="errorMsg">${calendarGlobal.calendar}</p>
         </div>
       </div>`;
-      resolve([ 'error' ]);
-    }else{
-      let priceArray =[
+      resolve(['error']);
+    } else {
+      let priceArray = [
         ['日期', '最低價', '最高價', '中位數', '平均價']
       ]
-      for(let i=0;i<calendarGlobal.calendar.length;i++){
+      for (let i = 0; i < calendarGlobal.calendar.length; i++) {
         priceArray.push([
           calendarGlobal.calendar[i].day,
           calendarGlobal.calendar[i].min,
@@ -179,21 +179,23 @@ function chart(){
         ]);
       }
 
-      let flightArray =[
+      let flightArray = [
         ['日期', '航班數量']
       ]
-      for(let i=0;i<calendarGlobal.calendar.length;i++){
+      for (let i = 0; i < calendarGlobal.calendar.length; i++) {
         flightArray.push([
           calendarGlobal.calendar[i].day,
           calendarGlobal.calendar[i].quantity
         ]);
       }
-      resolve([ 'success',priceArray,flightArray ]);
+      setTimeout(() => {
+        resolve([ 'success', priceArray, flightArray ]);
+      }, 1000);
     }
   });
-  chartPromise.then((chartData)=>{
-    if(chartData[0] !== "error"){
-      google.charts.load("current", {packages:["line"]});
+  chartPromise.then((chartData) => {
+    if (chartData[0] !== 'error') {
+      google.charts.load('current', { packages: ['line'] });
       google.charts.setOnLoadCallback(drawChart);
       function drawChart() {
         var data = google.visualization.arrayToDataTable(chartData[1]);
@@ -231,8 +233,7 @@ function chart(){
         chart.draw(data, google.charts.Bar.convertOptions(options));
       }
     }
-  })
-  .catch((error)=>{
-    console.log(error);
+  }).catch((error) => {
+      console.log(error);
   });
 }
