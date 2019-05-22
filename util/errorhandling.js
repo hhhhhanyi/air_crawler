@@ -33,7 +33,7 @@ const error = function error (error) {
     let apiError = {
       status: 'error',
       statusCode: 404,
-      flight: '沒有找到相關飛行航班，<br>請調整其他搜索範圍。'
+      error: '沒有找到相關飛行航班，<br>請調整其他搜索範圍。'
     };
     return apiError;
   } else {

@@ -14,7 +14,7 @@ fetch(`/api/calendar?departure=${departureCode}&arrival=${arrivalCode}&year=${ye
       </div>
       <div class="col-sm-8" id="errorMessage">
         <b id="sorry">Sorry!</b>
-        <p id="errorMsg">${calendarAPI.calendar}</p>
+        <p id="errorMsg">${calendarAPI.error}</p>
       </div>
     </div>`;
     return ["error",calendar];
@@ -80,7 +80,7 @@ function map(){
         </div>
         <div class="col-sm-8" id="errorMessage">
           <b id="sorry">Sorry!</b>
-          <p id="errorMsg">${mapAPI.map}</p>
+          <p id="errorMsg">${mapAPI.error}</p>
         </div>
       </div>`;
       return 'error';
@@ -161,7 +161,7 @@ function chart () {
         </div>
         <div class="col-sm-8" id="errorMessage">
           <b id="sorry">Sorry!</b>
-          <p id="errorMsg">${calendarGlobal.calendar}</p>
+          <p id="errorMsg">${calendarGlobal.error}</p>
         </div>
       </div>`;
       resolve(['error']);

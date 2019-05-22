@@ -41,7 +41,7 @@ fetch(`/api/search?departure=${departureCode}&arrival=${arrivalCode}&date=${date
           </div>
           <div class="col-sm-8" id="errorMessage">
             <b id="sorry">Sorry!</b>
-            <p id="errorMsg">${data.flight}</p>
+            <p id="errorMsg">${data.error}</p>
           </div>
         </div>`;
       };
