@@ -30,11 +30,10 @@ function createElement (tagName, settings, parentElement) {
 fetch(`/api/search?departure=${departureCode}&arrival=${arrivalCode}&date=${date}&p=${person}&t=${type}`)
 .then((response) => {
     return response.json();
-})
-.then((data) => {
+}).then((data) => {
     if (data.status === 'error') {
       function error (div) {
-        document.getElementById(`nav-${div}`).innerHTML=`
+        document.getElementById(`nav-${div}`).innerHTML = `
         <div class="row" id="error">
           <div class="col-sm-4">
             <img src="pic/alert.svg" id="errorImg">
@@ -51,9 +50,9 @@ fetch(`/api/search?departure=${departureCode}&arrival=${arrivalCode}&date=${date
       error('arrival_time');
     } else {
       function flight (counter, sort) {
-        for(let i = 0; i < data.flight[counter].length; i++) {
+        for (let i = 0; i < data.flight[counter].length; i++) {
           airline_name = data.flight[counter][i].flight[0].airline_name;
-          if(data.flight[counter][i].type === 'direct'){
+          if (data.flight[counter][i].type === 'direct') {
             createElement('div', {atr: [['class','row flightData'],['id',`flightData_${counter}_${i}`]]}, `nav-${sort}`);
             createElement('div', {atr: [['class', 'col-sm-3'],['style', 'padding:15px;'],['id', `col1_${counter}_${i}`]]}, `flightData_${counter}_${i}`);
             createElement('div', {atr: [['class', 'row'],['id', `row1_${counter}_${i}`]]}, `col1_${counter}_${i}`);
@@ -126,17 +125,16 @@ fetch(`/api/search?departure=${departureCode}&arrival=${arrivalCode}&date=${date
             createElement('div', {atr: [['class', 'flightPrice'],['id', `flightPrice_${counter}_${i}_2`]]}, `col3_${counter}_${i}_2`);
             createElement('p', {text:`NT$ `,atr: [['class', 'flightPrice_dollar']]}, `flightPrice_${counter}_${i}_2`);
             createElement('b', {text:data.flight[counter][i].totalPrice.toLocaleString(),atr: [['class', 'flightPrice_price']]}, `flightPrice_${counter}_${i}_2`);
-        }
+          }
+        };
       };
-    };
-    flight(0, 'price');
-    flight(1, 'time');
-    flight(2, 'departure_time');
-    flight(3, 'arrival_time');
-  }
-})
-.catch((error) => {
+      flight(0, 'price');
+      flight(1, 'time');
+      flight(2, 'departure_time');
+      flight(3, 'arrival_time');
+    }
+  }).catch((error) => {
     console.log({
       error: error
     });
-});
+  });

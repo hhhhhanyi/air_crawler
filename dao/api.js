@@ -37,13 +37,20 @@ module.exports = {
   transferFlight: function transferFlight (departureCode, arrivalCode, date, maxPrice) {
     return new Promise((resolve, reject) => {
       let departure, arrival;
-      let sql = `SELECT arrival_code,GROUP_CONCAT(json_object('flightNo',flightNo,'departure_code',departure_code,'arrival_code',arrival_code,'date',date,'cabinClass',cabinClass,'duration_hour',duration_hour,'duration_min',duration_min,'duration',duration,'departure_time',departure_time,'arrival_time',arrival_time,'airline_code',airline_code,'airline_name',airline_name,'departure_portCode',departure_portCode,'arrival_portCode',arrival_portCode,'tax',tax,'fare',fare,'totalPrice',totalPrice)) as flight FROM flight WHERE departure_code='${departureCode}' && arrival_code!='${arrivalCode}' && date='${date}' && totalPrice<${maxPrice} GROUP BY arrival_code`;
+      let sql = `SET GLOBAL group_concat_max_len = 1000000;`;
+      mysql.con.query(sql, (error, result) => {
+        if (error) {
+          reject(error);
+        }
+      });
+      sql = `SELECT arrival_code,GROUP_CONCAT(json_object('flightNo',flightNo,'departure_code',departure_code,'arrival_code',arrival_code,'date',date,'cabinClass',cabinClass,'duration_hour',duration_hour,'duration_min',duration_min,'duration',duration,'departure_time',departure_time,'arrival_time',arrival_time,'airline_code',airline_code,'airline_name',airline_name,'departure_portCode',departure_portCode,'arrival_portCode',arrival_portCode,'tax',tax,'fare',fare,'totalPrice',totalPrice)) as flight FROM flight WHERE departure_code='${departureCode}' && arrival_code!='${arrivalCode}' && date='${date}' && totalPrice<${maxPrice} GROUP BY arrival_code`;
       mysql.con.query(sql, (error, result) => {
         if (error) {
           reject(error);
         } else {
           for (let i = 0; i < result.length; i++) {
             result[i].flight = `[${result[i].flight}]`;
+            console.log(result[i].flight);
             result[i].flight = JSON.parse(result[i].flight);
           }
           departure = result;

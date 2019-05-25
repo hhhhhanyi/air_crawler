@@ -1,4 +1,4 @@
-##Search API
+## Search API
 - **End Point:** `/search`
 - **Method:** `POST`
 - **Request Headers:**
@@ -29,7 +29,7 @@ type      | String    | 航班的飛行方式 ex.直飛轉機 |
 		type: direct
 	}
 
-##Search API
+## Search API
 
 - **End Point**: `/search`
 - **Method**: `GET`
@@ -233,7 +233,7 @@ t         | String    | 航班的飛行方式 ex.直飛轉機 |
 		flight: '沒有找到相關飛行航班，請調整其他搜索範圍。'
     }
     
-##Map API
+## Map API
 - **End Point**: `/map`
 - **Method**: `GET`
 - **Query Parameters**
@@ -288,7 +288,7 @@ date      | String    | 本次旅程的日期     |
     }
 
 
-##Calendar API
+## Calendar API
 - **End Point**: `/calendar `
 - **Method**: `GET`
 - **Query Parameters**
