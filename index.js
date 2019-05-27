@@ -66,10 +66,10 @@ function airCrawler (resolve, reject) {
     /* error 處理 */
     errorHandling(error);
     /* 1 小時後重啟 */
-    // setTimeout(() => {
-    //   console.log('====== error ======');
-    //   airCrawler();
-    // }, 3600000);
+    setTimeout(() => {
+      console.log('====== error ======');
+      airCrawler();
+    }, 3600000);
   });
 };
 airCrawler();
