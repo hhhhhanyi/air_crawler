@@ -41,7 +41,7 @@ router.post('/search', (req, res) => {
   let date = req.body.date;
   let type = req.body.type;
   let adult = req.body.adult;
-  if (location.indexOf(departureCode) >= 0 && location.indexOf(arrivalCode) >= 0 && +new Date(date) >= 1556668800000 && +new Date(date) <= 1564531200000 && adult < 10 && flighttype.indexOf(type) >= 0) {
+  if (location.indexOf(departureCode) >= 0 && location.indexOf(arrivalCode) >= 0 && +new Date(date) >= 1556668800000 && +new Date(date) <= 1567209600000 && adult < 10 && flighttype.indexOf(type) >= 0) {
     let crawler = new Promise((resolve, reject) => {
       crawlerConfig = {
         departureCode: departureCode,
@@ -97,6 +97,7 @@ router.get('/search', (req, res) => {
   }
   if (location.indexOf(departureCode) >= 0 && location.indexOf(arrivalCode) >= 0 && +new Date(date) >= 1556668800000 && +new Date(date) <= 1564531200000 && adult < 10 && flighttype.indexOf(type) >= 0) {
     if (type === 'direct') {
+      console.log('direct');
       apiDAO.directFlight(departureCode, arrivalCode, date).then((data) => {
         if (data.length !== 0) {
           for (let i = 0; i < data.length; i++) {
@@ -140,6 +141,7 @@ router.get('/search', (req, res) => {
         }));
       });
     } else {
+      console.log('transfer');
       let transfer = new Promise((resolve, reject) => {
         apiDAO.directFlight(departureCode, arrivalCode, date).then((data) => {
           if (data.length !== 0) {
@@ -165,7 +167,6 @@ router.get('/search', (req, res) => {
           }
           return maxPrice;
         }).then((maxPrice) => {
-          console.log(maxPrice);
           apiDAO.transferFlight(departureCode, arrivalCode, date, maxPrice).then((data) => {
             resolve(data);
           }).catch((error) => {

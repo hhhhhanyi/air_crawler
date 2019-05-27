@@ -28,7 +28,7 @@ module.exports = {
       let sql = `SELECT flightNo, departure_code, arrival_code, date, cabinClass, duration_min, duration, duration_hour, departure_time, arrival_time, airline_code, departure_portCode,arrival_portCode,tax,fare,totalPrice, airline.name AS airline_name from flight INNER JOIN airline ON flight.airline_code=airline.code WHERE departure_code='${departureCode}' AND arrival_code='${arrivalCode}' AND date='${date}' ORDER BY totalPrice`;
       mysql.con.query(sql, (error, result) => {
         if (error) {
-          console.log(error);
+          reject(error);
         }
         resolve(result);
       });
@@ -50,7 +50,6 @@ module.exports = {
         } else {
           for (let i = 0; i < result.length; i++) {
             result[i].flight = `[${result[i].flight}]`;
-            console.log(result[i].flight);
             result[i].flight = JSON.parse(result[i].flight);
           }
           departure = result;
