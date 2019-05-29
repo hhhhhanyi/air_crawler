@@ -1,17 +1,16 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-const mysql = require('./util/mysql.js');
-const lib = require('./util/lib.js');
-const errorHandling = require('./util/errorhandling.js').error;
-const insertFlightData = require('./dao/crawler.js');
-
+const mysql = require('./util/mysql');
+const lib = require('./util/lib');
+const errorHandling = require('./util/errorhandling').error;
+const insertFlightData = require('./dao/crawler');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
 const searchRoutes = require('./routes/search');
 const statisticsRoutes = require('./routes/statistics');
 const crawlerListRoutes = require('./routes/crawlerList');
-
 app.use('/api', searchRoutes);
 app.use('/api', statisticsRoutes);
 app.use('/api', crawlerListRoutes);
@@ -37,7 +36,6 @@ function airCrawler (resolve, reject) {
           date: `${result[0].year}-${result[0].month}-${result[0].day}`
         };
         console.log(crawlerConfig.date);
-        console.log(crawlerConfig);
         resolve(crawlerConfig);
       } else {
         reject({

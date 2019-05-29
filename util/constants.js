@@ -24,5 +24,26 @@ module.exports = {
       'bfdfd862-dd04-4797-9e9a-886368d8d325',
       '8d0da2d5-4e89-4ff2-bbd4-20801974183d'
     ]
+  },
+  FLIGHT: {
+    location: ['TPE', 'HKG', 'BJS', 'TYO', 'SEL', 'BKK', 'SIN', 'KUL', 'NYC', 'YVR', 'LAX', 'YTO', 'SYD', 'LON', 'PAR'],
+    flighttype: ['direct', 'transfer'],
+    timezones: [
+      { lacation: 'TPE', time: 8 },
+      { lacation: 'HKG', time: 8 },
+      { lacation: 'BJS', time: 8 },
+      { lacation: 'TYO', time: 9 },
+      { lacation: 'SEL', time: 9 },
+      { lacation: 'BKK', time: 7 },
+      { lacation: 'SIN', time: 8 },
+      { lacation: 'KUL', time: 8 },
+      { lacation: 'NYC', time: -4 },
+      { lacation: 'YVR', time: -7 },
+      { lacation: 'LAX', time: -7 },
+      { lacation: 'YTO', time: -4 },
+      { lacation: 'SYD', time: 10 },
+      { lacation: 'LON', time: 0 },
+      { lacation: 'PAR', time: 2 }
+    ]
   }
 };

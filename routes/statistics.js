@@ -1,15 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const errorHandling = require('.././util/errorhandling.js').error;
-const apiDAO = require('.././dao/api.js');
+const errorHandling = require('.././util/errorhandling').error;
+const apiDAO = require('.././dao/api');
+const constants = require('.././util/constants').FLIGHT;
 
-const location = ['TPE', 'HKG', 'BJS', 'TYO', 'SEL', 'BKK', 'SIN', 'KUL', 'NYC', 'YVR', 'LAX', 'YTO', 'SYD', 'LON', 'PAR'];
 router.get('/calendar', (req, res) => {
   const departureCode = req.query.departure;
   const arrivalCode = req.query.arrival;
   const year = req.query.year;
   const month = req.query.month;
-  if (location.indexOf(departureCode) >= 0 && location.indexOf(arrivalCode) >= 0 && parseInt(year) === 2019 && parseInt(month) >= 5 && parseInt(month) <= 8) {
+  if (constants.location.indexOf(departureCode) >= 0 && constants.location.indexOf(arrivalCode) >= 0 && parseInt(year) === 2019 && parseInt(month) >= 5 && parseInt(month) <= 8) {
     let week = new Date(`${year}-${month}-01`);
     week = week.getDay();
     let average = 0;
@@ -51,7 +51,7 @@ router.get('/map', (req, res) => {
   const departureCode = req.query.departure;
   const arrivalCode = req.query.arrival;
   const date = req.query.date;
-  if (location.indexOf(departureCode) >= 0 && location.indexOf(arrivalCode) >= 0 && +new Date(date) >= 1556668800000 && +new Date(date) <= 1567209600000) {
+  if (constants.location.indexOf(departureCode) >= 0 && constants.location.indexOf(arrivalCode) >= 0 && +new Date(date) >= 1556668800000 && +new Date(date) <= 1567209600000) {
     apiDAO.map(departureCode, arrivalCode, date).then((data) => {
       res.send({
         statusCode: 200,

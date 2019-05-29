@@ -1,6 +1,8 @@
 const params = (new URL(document.location)).searchParams;
-const departureCode = params.get('departure');
-const arrivalCode = params.get('arrival');
+const departureCode = params.get('departure').split('_')[0];
+const arrivalCode = params.get('arrival').split('_')[0];
+const departureName = params.get('departure').split('_')[1];
+const arrivalName = params.get('arrival').split('_')[1];
 const person = params.get('p');
 const type = params.get('t');
 const date = params.get('date');

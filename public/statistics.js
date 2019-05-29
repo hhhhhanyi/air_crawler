@@ -1,5 +1,20 @@
 let calendarGlobal;
 
+function calendar (day) {
+  const selectedDate = `${year}-${month}-${day}`;
+  fetch('/api/search', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: `departure=${departureCode}_${departureName}&arrival=${arrivalCode}_${arrivalName}&date=${selectedDate}&adult=${person}&type=${type}`
+  }).then((response) => {
+    window.location.replace(response.url);
+  }).catch((error) => {
+    console.log(error);
+  });
+};
+
 fetch(`/api/calendar?departure=${departureCode}&arrival=${arrivalCode}&year=${year}&month=${month}`)
 .then((response) => {
     return response.json();
@@ -30,8 +45,8 @@ fetch(`/api/calendar?departure=${departureCode}&arrival=${arrivalCode}&year=${ye
         calendar += '<li></li>'
       }
       for (let k = 0; k < calendarAPI.calendar.length; k++) {
-        calendarDate = (parseInt(k + 1, 10) + 100).toString().substr(1)
-        calendar += `<li><a href="/result.html?departure=${departureCode}&arrival=${arrivalCode}&date=${year}-${month}-${calendarDate}&p=${person}&t=${type}">
+        calendarDate = (parseInt(k + 1, 10) + 100).toString().substr(1);
+        calendar += `<li><a onclick="calendar('${calendarDate}');">
         <p class="calendar_date">${calendarDate}</p>
         `
         if (calendarAPI.calendar[k].min > calendarAPI.average) {
@@ -132,10 +147,23 @@ function map() {
               let selectedArrival;
               for (let i = 0; i < place.length; i++) {
                 if (data.getValue(selection[0].row, 0) === place[i].split("_")[1]) {
-                  selectedArrival = place[i].split("_")[0];
+                  selectedArrival = place[i];
                 }
               }
-              window.location.href = `/result.html?departure=${departureCode}&arrival=${selectedArrival}&date=${date}&p=${person}&t=${type}`;
+              function map (location) {
+                fetch('/api/search', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                  },
+                  body: `departure=${departureCode}_${departureName}&arrival=${location}&date=${date}&adult=${person}&type=${type}`
+                }).then((response) => {
+                  window.location.replace(response.url);
+                }).catch((error) => {
+                  console.log(error);
+                });
+              };
+              map(selectedArrival);
             }
           });
           chart.draw(data, options);
@@ -207,7 +235,6 @@ function chart () {
         var chart = new google.charts.Line(document.getElementById('price_div'));
         chart.draw(data, google.charts.Line.convertOptions(options));
       }
-
       google.charts.load('current', { 'packages': ['bar'] });
       google.charts.setOnLoadCallback(drawCharts);
       function drawCharts() {

@@ -1,4 +1,4 @@
-const credentials = require('./../util/credentials.js');
+const credentials = require('./../util/credentials');
 const nodemailer = require('nodemailer');
 const fs = require('fs');
 

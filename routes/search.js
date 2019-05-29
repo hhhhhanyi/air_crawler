@@ -2,33 +2,14 @@ const express = require('express');
 const app = express();
 const router = express.Router();
 const bodyParser = require('body-parser');
-const apiDAO = require('.././dao/api.js');
-const lib = require('.././util/lib.js');
-const insertFlightData = require('.././dao/crawler.js');
-const errorHandling = require('.././util/errorhandling.js').error;
+const apiDAO = require('.././dao/api');
+const lib = require('.././util/lib');
+const insertFlightData = require('.././dao/crawler');
+const errorHandling = require('.././util/errorhandling').error;
+const constants = require('.././util/constants').FLIGHT;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
-const location = ['TPE', 'HKG', 'BJS', 'TYO', 'SEL', 'BKK', 'SIN', 'KUL', 'NYC', 'YVR', 'LAX', 'YTO', 'SYD', 'LON', 'PAR'];
-const flighttype = ['direct', 'transfer'];
-const timezones = [
-  { lacation: 'TPE', time: 8 },
-  { lacation: 'HKG', time: 8 },
-  { lacation: 'BJS', time: 8 },
-  { lacation: 'TYO', time: 9 },
-  { lacation: 'SEL', time: 9 },
-  { lacation: 'BKK', time: 7 },
-  { lacation: 'SIN', time: 8 },
-  { lacation: 'KUL', time: 8 },
-  { lacation: 'NYC', time: -4 },
-  { lacation: 'YVR', time: -7 },
-  { lacation: 'LAX', time: -7 },
-  { lacation: 'YTO', time: -4 },
-  { lacation: 'SYD', time: 10 },
-  { lacation: 'LON', time: 0 },
-  { lacation: 'PAR', time: 2 }
-];
 
 router.post('/search', (req, res) => {
   let crawlerConfig, departureCode, arrivalCode, departureName, arrivalName;
@@ -41,51 +22,58 @@ router.post('/search', (req, res) => {
   const date = req.body.date;
   const type = req.body.type;
   const adult = req.body.adult;
-  if (location.indexOf(departureCode) >= 0 && location.indexOf(arrivalCode) >= 0 && +new Date(date) >= 1556668800000 && +new Date(date) <= 1567209600000 && adult < 10 && flighttype.indexOf(type) >= 0) {
+  if (constants.location.indexOf(departureCode) >= 0 && constants.location.indexOf(arrivalCode) >= 0 && +new Date(date) >= 1556668800000 && +new Date(date) <= 1567209600000 && adult < 10 && constants.flighttype.indexOf(type) >= 0) {
     const crawler = new Promise((resolve, reject) => {
-      crawlerConfig = {
-        departureCode: departureCode,
-        arrivalCode: arrivalCode,
-        departureName: departureName,
-        arrivalName: arrivalName,
-        year: date.split('-')[0],
-        month: date.split('-')[1],
-        day: date.split('-')[2],
-        date: date
-      };
-      resolve(crawlerConfig);
-    });
-    /* 排除過去資料 */
-    if (+new Date(date) > +new Date()) {
-      crawler.then((crawlerConfig) => {
-        /* Request API */
-        return lib.requestAPI(crawlerConfig);
-      }).then((flightData) => {
-        /* 整理當日航班資訊、統計每日航班價格 */
-        return lib.createFlightData(crawlerConfig, flightData);
-      }).then((data) => {
-        /* 輸入 Database */
-        return insertFlightData.crawler(crawlerConfig, data[0], data[1]);
-      }).catch((error) => {
-        errorHandling(error);
-      }).then(() => {
-        res.redirect(`../result.html?departure=${departureCode}&arrival=${arrivalCode}&date=${date}&p=${adult}&t=${type}`);
+      apiDAO.updateTime(departureCode, arrivalCode, date).then((result) => {
+        console.log(result);
+        if (+new Date() > result + 86400000 && +new Date(date) > +new Date()) {
+          crawlerConfig = {
+            departureCode: departureCode,
+            arrivalCode: arrivalCode,
+            departureName: departureName,
+            arrivalName: arrivalName,
+            year: date.split('-')[0],
+            month: date.split('-')[1],
+            day: date.split('-')[2],
+            date: date
+          };
+          resolve(crawlerConfig);
+        } else {
+          reject({
+            crawl: 'No Need To Crawl!'
+          });
+        }
       });
-    } else {
-      res.redirect(`../result.html?departure=${departureCode}&arrival=${arrivalCode}&date=${date}&p=${adult}&t=${type}`);
-    }
+    });
+    crawler.then((crawlerConfig) => {
+      /* Request API */
+      return lib.requestAPI(crawlerConfig);
+    }).then((flightData) => {
+      /* 整理當日航班資訊、統計每日航班價格 */
+      return lib.createFlightData(crawlerConfig, flightData);
+    }).then((data) => {
+      /* 輸入 Database */
+      return insertFlightData.crawler(crawlerConfig, data[0], data[1]);
+    }).catch((error) => {
+      if (!error.crawl) {
+        errorHandling(error);
+      }
+      console.log(error);
+    }).then(() => {
+      res.redirect(`../result.html?departure=${departureCode}_${departureName}&arrival=${arrivalCode}_${arrivalName}&date=${date}&p=${adult}&t=${type}`);
+    });
   } else {
     errorHandling({
       api: 'SEARCH POST API ERROR',
       error: req.headers
     });
-    res.redirect(`../result.html?departure=${departureCode}&arrival=${arrivalCode}&date=${date}&p=${adult}&t=${type}`);
+    res.redirect(`../result.html?departure=${departureCode}_${departureName}&arrival=${arrivalCode}_${arrivalName}&date=${date}&p=${adult}&t=${type}`);
   }
 });
 
 router.get('/search', (req, res) => {
-  const departureCode = req.query.departure;
-  const arrivalCode = req.query.arrival;
+  const departureCode = req.query.departure.split('_')[0];
+  const arrivalCode = req.query.arrival.split('_')[0];
   const date = req.query.date;
   const type = req.query.t;
   let adult = parseInt(req.query.p);
@@ -95,7 +83,7 @@ router.get('/search', (req, res) => {
   if (adult <= 0) {
     adult = 1;
   }
-  if (location.indexOf(departureCode) >= 0 && location.indexOf(arrivalCode) >= 0 && +new Date(date) >= 1556668800000 && +new Date(date) <= 1567209600000 && adult < 10 && flighttype.indexOf(type) >= 0) {
+  if (constants.location.indexOf(departureCode) >= 0 && constants.location.indexOf(arrivalCode) >= 0 && +new Date(date) >= 1556668800000 && +new Date(date) <= 1567209600000 && adult < 10 && constants.flighttype.indexOf(type) >= 0) {
     if (type === 'direct') {
       console.log('direct');
       apiDAO.directFlight(departureCode, arrivalCode, date).then((data) => {
@@ -147,10 +135,10 @@ router.get('/search', (req, res) => {
           if (data.length !== 0) {
             let arrivalTimezone, departureTimezone;
             const today = +new Date(`${date} 23:59`);
-            arrivalTimezone = timezones.findIndex(x => x.lacation === departureCode);
+            arrivalTimezone = constants.timezones.findIndex(x => x.lacation === departureCode);
             for (let i = 0; i < data.length; i++) {
-              departureTimezone = timezones.findIndex(x => x.lacation === data[i].arrival_code);
-              if (+new Date(`${date} ${data[i].departure_time}`) + data[i].duration + (timezones[departureTimezone].time - timezones[arrivalTimezone].time) * 3600000 < today) {
+              departureTimezone = constants.timezones.findIndex(x => x.lacation === data[i].arrival_code);
+              if (+new Date(`${date} ${data[i].departure_time}`) + data[i].duration + (constants.timezones[departureTimezone].time - constants.timezones[arrivalTimezone].time) * 3600000 < today) {
                 flightData.push({
                   type: 'direct',
                   total_duration: data[i].duration,

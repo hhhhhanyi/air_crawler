@@ -1,4 +1,4 @@
-const constants = require('.././util/constants.js');
+const constants = require('.././util/constants');
 const request = require('request');
 
 function statistics (price) {
@@ -84,8 +84,8 @@ function createFlightData (crawlerConfig, flightData) {
 
 function requestAPI (crawlerConfig) {
   return new Promise((resolve, reject) => {
-    let randomNumber = Math.floor(Math.random() * 8);
-    let options = {
+    const randomNumber = Math.floor(Math.random() * 8);
+    const options = {
       url: `${constants.CRAWLER.url}flightapi/flightSearch`,
       method: 'POST',
       headers: {
@@ -115,7 +115,6 @@ function requestAPI (crawlerConfig) {
         }
       }
     };
-    console.log(options.headers);
     request(options, (error, res, body) => {
       if (error) {
         reject({

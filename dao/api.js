@@ -23,6 +23,23 @@ module.exports = {
       });
     });
   },
+  updateTime: (departureCode, arrivalCode, date) => {
+    let year, month, day;
+    if (date.indexOf('-') >= 0) {
+      year = date.split('-')[0];
+      month = date.split('-')[1];
+      day = date.split('-')[2];
+    }
+    return new Promise((resolve, reject) => {
+      const updateTime = `SELECT last_update from crawler_list WHERE departure_code='${departureCode}' AND arrival_code='${arrivalCode}' AND year='${year}' AND month='${month}' AND day='${day}'`;
+      mysql.con.query(updateTime, (error, result) => {
+        if (error) {
+          reject(error);
+        }
+        resolve(result[0].last_update);
+      });
+    });
+  },
   directFlight: (departureCode, arrivalCode, date) => {
     return new Promise((resolve, reject) => {
       const directFlight = `SELECT flightNo, departure_code, arrival_code, date, cabinClass, duration_min, duration, duration_hour, departure_time, arrival_time, airline_code, departure_portCode,arrival_portCode,tax,fare,totalPrice, airline.name AS airline_name from flight INNER JOIN airline ON flight.airline_code=airline.code WHERE departure_code='${departureCode}' AND arrival_code='${arrivalCode}' AND date='${date}' ORDER BY totalPrice`;
