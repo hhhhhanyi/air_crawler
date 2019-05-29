@@ -20,10 +20,9 @@ function airCrawler (resolve, reject) {
   /* database 抓爬蟲列表最後更新資料 */
   let crawlerConfig;
   let crawler = new Promise((resolve, reject) => {
-    let sql = 'SELECT departure_code,arrival_code,year,month,day, d.name AS departure_name, a.name AS arrival_name FROM crawler_list LEFT JOIN location d ON (crawler_list.departure_code = d.code) LEFT JOIN location a ON (crawler_list.arrival_code = a.code) WHERE last_update = (SELECT MIN(last_update) FROM crawler_list)';
-    mysql.con.query(sql, (error, result) => {
+    const crawlerList = 'SELECT departure_code,arrival_code,year,month,day, d.name AS departure_name, a.name AS arrival_name FROM crawler_list LEFT JOIN location d ON (crawler_list.departure_code = d.code) LEFT JOIN location a ON (crawler_list.arrival_code = a.code) WHERE last_update = (SELECT MIN(last_update) FROM crawler_list)';
+    mysql.con.query(crawlerList, (error, result) => {
       if (error) {
-        console.log(error);
         reject(error);
       }
       if (result[0]) {
@@ -57,7 +56,7 @@ function airCrawler (resolve, reject) {
     /* 輸入 Database */
     return insertFlightData.crawler(crawlerConfig, data[0], data[1]);
   }).then((insertSql) => {
-    let delay = Math.floor(Math.random() * 10000) + 20000;
+    const delay = Math.floor(Math.random() * 10000) + 20000;
     console.log(delay);
     setTimeout(() => {
       airCrawler();

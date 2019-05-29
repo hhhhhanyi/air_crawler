@@ -10,10 +10,10 @@ const mailTransport = nodemailer.createTransport({
   }
 });
 
-const error = function error (error) {
+const error = (error) => {
   if (error.sql) {
     /* MySQL Error */
-    fs.appendFileSync('./log/sql.log', `\n\n${error}\nTime: ${new Date()}`, 'utf8');
+    fs.appendFileSync('./log/sql.log', `\n\n${JSON.stringify(error)}\nTime: ${new Date()}`, 'utf8');
   } else if (error.request) {
     /* CRAWLER Error */
     mailTransport.sendMail({
@@ -30,7 +30,7 @@ const error = function error (error) {
   } else if (error.api) {
     /* API Error */
     fs.appendFileSync('./log/api.log', `\n\n${error.api}\n${JSON.stringify(error.error)}\nTime: ${new Date()}`, 'utf8');
-    let apiError = {
+    const apiError = {
       status: 'error',
       statusCode: 404,
       error: '沒有找到相關飛行航班，<br>請調整其他搜索範圍。'
@@ -38,7 +38,7 @@ const error = function error (error) {
     return apiError;
   } else {
     /* OTHER Error */
-    fs.appendFileSync('./log/error.log', `\n\n${error}\nTime: ${new Date()}`, 'utf8');
+    fs.appendFileSync('./log/error.log', `\n\n${JSON.stringify(error)}\nTime: ${new Date()}`, 'utf8');
   };
 };
 

@@ -15,7 +15,7 @@ router.get('/crawler_list', (req, res) => {
   function departureCrawler () {
     arrivalCount = 0;
     if (departureCount < airport.length) {
-      let city = new Promise((resolve, reject) => {
+      const city = new Promise((resolve, reject) => {
         function arrivalCrawler () {
           if (arrivalCount < airport.length) {
             if (arrivalCount !== departureCount) {
@@ -40,12 +40,12 @@ router.get('/crawler_list', (req, res) => {
       city.then(() => {
         departureCount++;
         departureCrawler();
-      }).catch(function (error) {
+      }).catch((error) => {
         console.log(error.message);
       });
     }
-    let sql = 'INSERT INTO crawler_list(departure_code,departure_name,arrival_code,arrival_name,year,month,day,last_update) VALUES ?';
-    mysql.con.query(sql, [data], (error, result) => {
+    const crawlerList = 'INSERT INTO crawler_list(departure_code,departure_name,arrival_code,arrival_name,year,month,day,last_update) VALUES ?';
+    mysql.con.query(crawlerList, [data], (error, result) => {
       if (error) throw error;
       console.log(result);
     });

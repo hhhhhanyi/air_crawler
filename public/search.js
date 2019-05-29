@@ -1,12 +1,12 @@
-let params = (new URL(document.location)).searchParams;
-let departureCode = params.get('departure');
-let arrivalCode = params.get('arrival');
-let person = params.get('p');
-let type = params.get('t');
-let date = params.get('date');
-let year = date.split('-')[0];
-let month = date.split('-')[1];
-let day = date.split('-')[2];
+const params = (new URL(document.location)).searchParams;
+const departureCode = params.get('departure');
+const arrivalCode = params.get('arrival');
+const person = params.get('p');
+const type = params.get('t');
+const date = params.get('date');
+const year = date.split('-')[0];
+const month = date.split('-')[1];
+const day = date.split('-')[2];
 
 function createElement (tagName, settings, parentElement) {
   let obj = document.createElement(tagName);

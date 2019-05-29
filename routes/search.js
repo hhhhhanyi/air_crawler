@@ -38,11 +38,11 @@ router.post('/search', (req, res) => {
     departureName = req.body.departure.split('_')[1];
     arrivalName = req.body.arrival.split('_')[1];
   }
-  let date = req.body.date;
-  let type = req.body.type;
-  let adult = req.body.adult;
+  const date = req.body.date;
+  const type = req.body.type;
+  const adult = req.body.adult;
   if (location.indexOf(departureCode) >= 0 && location.indexOf(arrivalCode) >= 0 && +new Date(date) >= 1556668800000 && +new Date(date) <= 1567209600000 && adult < 10 && flighttype.indexOf(type) >= 0) {
-    let crawler = new Promise((resolve, reject) => {
+    const crawler = new Promise((resolve, reject) => {
       crawlerConfig = {
         departureCode: departureCode,
         arrivalCode: arrivalCode,
@@ -84,18 +84,18 @@ router.post('/search', (req, res) => {
 });
 
 router.get('/search', (req, res) => {
-  let departureCode = req.query.departure;
-  let arrivalCode = req.query.arrival;
-  let date = req.query.date;
+  const departureCode = req.query.departure;
+  const arrivalCode = req.query.arrival;
+  const date = req.query.date;
+  const type = req.query.t;
   let adult = parseInt(req.query.p);
-  let type = req.query.t;
   let locationData = [];
   let flightData = [];
   let maxPrice, arrivalTime, departureTime;
   if (adult <= 0) {
     adult = 1;
   }
-  if (location.indexOf(departureCode) >= 0 && location.indexOf(arrivalCode) >= 0 && +new Date(date) >= 1556668800000 && +new Date(date) <= 1564531200000 && adult < 10 && flighttype.indexOf(type) >= 0) {
+  if (location.indexOf(departureCode) >= 0 && location.indexOf(arrivalCode) >= 0 && +new Date(date) >= 1556668800000 && +new Date(date) <= 1567209600000 && adult < 10 && flighttype.indexOf(type) >= 0) {
     if (type === 'direct') {
       console.log('direct');
       apiDAO.directFlight(departureCode, arrivalCode, date).then((data) => {
@@ -111,19 +111,19 @@ router.get('/search', (req, res) => {
             });
           }
           let price = flightData.slice(0, flightData.length);
-          price.sort(function (a, b) {
+          price.sort((a, b) => {
             return a.totalPrice - b.totalPrice;
           });
           let time = flightData.slice(0, flightData.length);
-          time.sort(function (a, b) {
+          time.sort((a, b) => {
             return a.total_duration - b.total_duration;
           });
           let departure = flightData.slice(0, flightData.length);
-          departure.sort(function (a, b) {
+          departure.sort((a, b) => {
             return a.departure_time - b.departure_time;
           });
           let arrival = flightData.slice(0, flightData.length);
-          arrival.sort(function (a, b) {
+          arrival.sort((a, b) => {
             return a.arrival_time - b.arrival_time;
           });
           res.send({
@@ -142,11 +142,11 @@ router.get('/search', (req, res) => {
       });
     } else {
       console.log('transfer');
-      let transfer = new Promise((resolve, reject) => {
+      const transfer = new Promise((resolve, reject) => {
         apiDAO.directFlight(departureCode, arrivalCode, date).then((data) => {
           if (data.length !== 0) {
             let arrivalTimezone, departureTimezone;
-            let today = +new Date(`${date} 23:59`);
+            const today = +new Date(`${date} 23:59`);
             arrivalTimezone = timezones.findIndex(x => x.lacation === departureCode);
             for (let i = 0; i < data.length; i++) {
               departureTimezone = timezones.findIndex(x => x.lacation === data[i].arrival_code);
@@ -183,8 +183,8 @@ router.get('/search', (req, res) => {
         });
       });
       transfer.then((data) => {
-        let departure = data[0];
-        let arrival = data[1];
+        const departure = data[0];
+        const arrival = data[1];
         // 配對相同地點
         for (let i = 0; i < departure.length; i++) {
           for (let k = 0; k < arrival.length; k++) {
@@ -226,21 +226,21 @@ router.get('/search', (req, res) => {
         return flightData;
       }).then((flightData) => {
         let price = flightData.slice(0, flightData.length);
-        price.sort(function (a, b) {
+        price.sort((a, b) => {
           return a.totalPrice - b.totalPrice;
         });
         price = price.slice(0, 20);
         let time = flightData.slice(0, flightData.length);
-        time.sort(function (a, b) {
+        time.sort((a, b) => {
           return a.total_duration - b.total_duration;
         });
         time = time.slice(0, 20);
         let departure = flightData.slice(0, flightData.length);
-        departure.sort(function (a, b) {
+        departure.sort((a, b) => {
           return a.departure_time - b.departure_time;
         });
         let arrival = flightData.slice(0, flightData.length);
-        arrival.sort(function (a, b) {
+        arrival.sort((a, b) => {
           return a.arrival_time - b.arrival_time;
         });
         res.send({
